@@ -11,3 +11,5 @@ export default function Home() {
     </main>
   );
 }
+
+// Bg color code C3FDBF
