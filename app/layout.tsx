@@ -1,40 +1,31 @@
-import type { Metadata } from 'next'
+"use client";
 import { DM_Sans } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/providers/theme-provider'
-import ModalProvider from '@/providers/modal-provider'
-import { Toaster } from './components/ui/toaster'
-import { BillingProvider } from '@/providers/billing-provider'
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { PetraWallet } from 'petra-plugin-wallet-adapter';
+import { TrustWallet } from "@trustwallet/aptos-wallet-adapter";
+import { OKXWallet } from "@okwallet/aptos-wallet-adapter";
 
 const font = DM_Sans({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Fuzzie.',
-  description: 'Automate Your Work With Fuzzie.',
-}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const wallets = [
+    new PetraWallet(),
+    new TrustWallet(),
+    new OKXWallet(),
+  ];
   return (
       <html lang="en">
+      <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
         <body className={font.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <BillingProvider>
-              <ModalProvider>
+           
                 {children}
-                <Toaster />
-              </ModalProvider>
-            </BillingProvider>
-          </ThemeProvider>
-        </body>
+                </body>
+      </AptosWalletAdapterProvider>
       </html>
   )
 }
